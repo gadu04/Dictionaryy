@@ -5,8 +5,6 @@ public class Dictionary {
 
     public static ArrayList<String> SaveHistoryWord = new ArrayList();
 
-    public static int NumberOfHistory = 0;
-
     public ArrayList<Word> getWords() {
         return words;
     }

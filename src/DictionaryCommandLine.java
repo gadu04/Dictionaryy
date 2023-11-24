@@ -19,6 +19,7 @@ public class DictionaryCommandLine {
         System.out.println("[7] Game");
         System.out.println("[8] Import from file");
         System.out.println("[9] Export to file");
+        System.out.println("[10] Search History");
     }
 
     public void showAllWords() {
@@ -81,7 +82,7 @@ public class DictionaryCommandLine {
                     SearchCommandLine();
                     break;
                 case "7":
-                    // Implement the Game function
+                    GameCommandLine();
                     break;
                 case "8":
                     ImportToFileCommandLine();
@@ -106,7 +107,6 @@ public class DictionaryCommandLine {
             if ((word.getWord_target()).equals(worded)) {
 
                 (Dictionary.SaveHistoryWord).add(word.getWord_target()); //Lưu lại lịch sử tìm kiếm
-                Dictionary.NumberOfHistory++; //Lưu lại số từ đã tìm kiếm
 
                 System.out.println(" English    | Vietnamese");
                 System.out.println("----------------------------");
@@ -130,6 +130,9 @@ public class DictionaryCommandLine {
         int i = 1;
         for (Word word : Dictionary.words) {
             if (word.getWord_target().startsWith(worded)) {
+
+                (Dictionary.SaveHistoryWord).add(word.getWord_target()); //Lưu lại lịch sử tìm kiếm
+
                 System.out.printf("%d | %-10s | %-10s%n", i, word.getWord_target(), word.getWord_explain());
                 i++;
             }
@@ -226,26 +229,38 @@ public class DictionaryCommandLine {
         }
     }
 
-    public void ImportToFileCommandLine() {
-        for (Word word : Dictionary.words) {
-
-        }
-
-    }
-
     public void HistoryCommandLine() {
-        System.out.println("No| English    | Vietnamese");
-        System.out.println("----------------------------");
-
-        int n = Dictionary.words.size();
+        if (Dictionary.SaveHistoryWord.isEmpty()) {
+            System.out.println("Không có từ nào tìm kiếm gần đây");
+            return;
+        }
+        System.out.println("Tìm kiếm gần đây");
+        int n = Dictionary.SaveHistoryWord.size();
         int no = 1;
         for(int i = n-1 ; i >= 0 ; i--) {
-            System.out.printf("%d | %-10s | %-10s%n", no, (Dictionary.words.get(i)).getWord_target(), (Dictionary.words.get(i)).getWord_explain());
+            System.out.println(Dictionary.SaveHistoryWord.get(i));
             no++;
         }
+        System.out.println("Số kết quả đã tìm kiếm là:" + no);
     }
     public static void main(String[] args) {
         DictionaryCommandLine dictionaryApp = new DictionaryCommandLine();
         dictionaryApp.dictionaryBasic();
+    }
+
+    public void ImportToFileCommandLine() {
+        for (Word word : Dictionary.words) {
+
+
+            //Đang build dở :))
+
+        }
+
+    }
+
+    public void GameCommandLine() {
+
+        //Đang build dở :))
+
     }
 }
