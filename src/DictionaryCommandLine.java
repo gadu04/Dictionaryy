@@ -89,6 +89,8 @@ public class DictionaryCommandLine {
                 case "9":
                     ExportToFileCommandLine();
                     break;
+                case "10":
+                    HistoryCommandLine();
                 default:
                     System.out.println("Không khả dụng yêu cầu nhập lại!");
             }
@@ -102,6 +104,9 @@ public class DictionaryCommandLine {
         String worded = sc.nextLine();
         for (Word word : Dictionary.words) {
             if ((word.getWord_target()).equals(worded)) {
+
+                (Dictionary.SaveHistoryWord).add(word.getWord_target()); //Lưu lại lịch sử tìm kiếm
+                Dictionary.NumberOfHistory++; //Lưu lại số từ đã tìm kiếm
 
                 System.out.println(" English    | Vietnamese");
                 System.out.println("----------------------------");
@@ -205,7 +210,7 @@ public class DictionaryCommandLine {
 
             // Ghi từng phần tử của ArrayList vào file, mỗi phần tử trên một dòng
             for (Word word : Dictionary.words) {
-                bufferedWriter.write(word.getWord_target() + ": " + word.getWord_explain());
+                bufferedWriter.write(word.getWord_target() + " " + word.getWord_explain());
                 bufferedWriter.newLine(); // Thêm dòng mới sau mỗi đối tượng
             }
 
@@ -221,29 +226,24 @@ public class DictionaryCommandLine {
         }
     }
 
-    public void ImportToFileCommandLine() { // Hàm đọc file Dictionary.txt
-        try {
-            File file = new File("Dictionary.txt");
-            FileReader fileReader = new FileReader(file);
+    public void ImportToFileCommandLine() {
+        for (Word word : Dictionary.words) {
 
-            // Tạo đối tượng BufferedReader để đọc dữ liệu hiệu quả hơn
-            BufferedReader output = new BufferedReader(fileReader);
-
-            // Đọc từng dòng từ file và in ra màn hình
-            for(Word word : Dictionary.words) {
-
-            }
-
-
-            // Đóng luồng đọc
-            output.close();
-            fileReader.close();
-
-        } catch (IOException check) {
-            System.out.println("LỖI HÀM IMPORT TO FILE");
         }
+
     }
 
+    public void HistoryCommandLine() {
+        System.out.println("No| English    | Vietnamese");
+        System.out.println("----------------------------");
+
+        int n = Dictionary.words.size();
+        int no = 1;
+        for(int i = n-1 ; i >= 0 ; i--) {
+            System.out.printf("%d | %-10s | %-10s%n", no, (Dictionary.words.get(i)).getWord_target(), (Dictionary.words.get(i)).getWord_explain());
+            no++;
+        }
+    }
     public static void main(String[] args) {
         DictionaryCommandLine dictionaryApp = new DictionaryCommandLine();
         dictionaryApp.dictionaryBasic();
