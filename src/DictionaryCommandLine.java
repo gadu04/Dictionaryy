@@ -221,7 +221,7 @@ public class DictionaryCommandLine {
         }
     }
 
-    public void ImportToFileCommandLine() {
+    public void ImportToFileCommandLine() { // Hàm đọc file Dictionary.txt
         try {
             File file = new File("Dictionary.txt");
             FileReader fileReader = new FileReader(file);
@@ -243,12 +243,6 @@ public class DictionaryCommandLine {
             System.out.println("LỖI HÀM IMPORT TO FILE");
         }
     }
-
-
-    }
-
-
-
 
     public static void main(String[] args) {
         DictionaryCommandLine dictionaryApp = new DictionaryCommandLine();
