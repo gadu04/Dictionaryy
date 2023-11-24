@@ -7,5 +7,5 @@ public class Dictionary {
         return words;
     }
 
-    public ArrayList<>
+    public ArrayList<Word
 }
