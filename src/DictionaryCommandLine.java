@@ -1,11 +1,17 @@
+
+package com.example.demogaru;
+import com.example.demogaru.GoogleTranslateAPI;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-
-
-public class DictionaryCommandLine {
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+public class DictionaryCommandLine extends Dictionary {
 
     public void displayMenu() {
         System.out.println("Welcome to My Application!");
@@ -20,6 +26,8 @@ public class DictionaryCommandLine {
         System.out.println("[8] Import from file");
         System.out.println("[9] Export to file");
         System.out.println("[10] Search History");
+        System.out.println("[11] Sound");
+        System.out.println("[12] Google Translate");
     }
 
     public void showAllWords() {
@@ -76,22 +84,33 @@ public class DictionaryCommandLine {
                     showAllWords();
                     break;
                 case "5":
-                    LookUpCommandLine();
+//                    LookUpCommandLine();
                     break;
                 case "6":
                     SearchCommandLine();
                     break;
                 case "7":
-                    GameCommandLine();
+                    //
                     break;
                 case "8":
-                    ImportToFileCommandLine();
+                    ImportFromFileCommandLine();
                     break;
                 case "9":
                     ExportToFileCommandLine();
                     break;
                 case "10":
-                    HistoryCommandLine();
+                    //HistoryCommandLine();
+                case "11":
+                    //
+                case "12":
+                    try{
+                        Translate();
+                    }
+                    catch (IOException e){
+                    }
+                    break;
+
+
                 default:
                     System.out.println("Không khả dụng yêu cầu nhập lại!");
             }
@@ -99,24 +118,26 @@ public class DictionaryCommandLine {
     }
 
 
-    public void LookUpCommandLine() { //Hàm tìm kiếm các từ tiếng Anh
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Nhập từ cần tìm: ");
-        String worded = sc.nextLine();
+    public static String LookUpCommandLine(String abc) { //Hàm tìm kiếm các từ tiếng Anh
+        ImportFromFileCommandLine();
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("Nhập từ cần tìm: ");
+//        String worded = sc.nextLine();
+
         for (Word word : Dictionary.words) {
-            if ((word.getWord_target()).equals(worded)) {
+            if ((word.getWord_target()).equals(abc)) {
 
-                (Dictionary.SaveHistoryWord).add(word.getWord_target()); //Lưu lại lịch sử tìm kiếm
-
-                System.out.println(" English    | Vietnamese");
-                System.out.println("----------------------------");
-
-                System.out.printf(" %-10s | %-10s%n", word.getWord_target(), word.getWord_explain());
-                return;
+                  (Dictionary.SaveHistoryWord).add(word.getWord_target()); //Lưu lại lịch sử tìm kiếm
+//
+//                System.out.println(" English    | Vietnamese");
+//                System.out.println("----------------------------");
+//
+//                System.out.printf(" %-10s | %-10s%n", word.getWord_target(), word.getWord_explain());
+                return word.getWord_explain();
             }
         }
-        System.out.println("Không tìm thấy từ cần tìm");
-
+//        System.out.println("Không tìm thấy từ cần tìm");
+        return "Không tìm thấy từ!";
     }
 
     public void SearchCommandLine() { //Hàm tìm kiếm các từ tiếng Anh có tiền tố là
@@ -194,73 +215,120 @@ public class DictionaryCommandLine {
 
     public void ExportToFileCommandLine() { // Hàm nhập ArrayList words vào file Dictionary.txt
         try {
-            if ((Dictionary.words).isEmpty()) {
+            if (Dictionary.words.isEmpty()) {
                 System.out.println("Không có dữ liệu để Export!");
                 return;
             }
 
             File file = new File("Dictionary.txt");
-            // Kiểm tra nếu file không tồn tại thì in ra thông báo
             if (!file.exists()) {
                 System.out.println("File không tồn tại!");
             }
 
-            // Tạo đối tượng FileWriter
-            FileWriter input = new FileWriter(file);
+            ArrayList<String> wordEntries = new ArrayList<>();
 
-            // Tạo đối tượng BufferedWriter để ghi dữ liệu hiệu quả hơn
-            BufferedWriter bufferedWriter = new BufferedWriter(input);
-
-            // Ghi từng phần tử của ArrayList vào file, mỗi phần tử trên một dòng
             for (Word word : Dictionary.words) {
-                bufferedWriter.write(word.getWord_target() + " " + word.getWord_explain());
-                bufferedWriter.newLine(); // Thêm dòng mới sau mỗi đối tượng
+                String entry = word.getWord_target() + " " + word.getWord_explain();
+                wordEntries.add(entry);
+            }
+            Collections.sort(wordEntries);
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            for (String entry : wordEntries) {
+                bufferedWriter.write(entry);
+                bufferedWriter.newLine();
             }
 
-            // Đóng các luồng
             bufferedWriter.close();
-            input.close();
+            fileWriter.close();
 
             System.out.println("Đã ghi vào file thành công.");
 
-        }
-        catch(IOException check) {
+        } catch (IOException e) {
             System.out.println("LỖI HÀM EXPORT TO FILE");
         }
     }
 
-    public void HistoryCommandLine() {
-        if (Dictionary.SaveHistoryWord.isEmpty()) {
-            System.out.println("Không có từ nào tìm kiếm gần đây");
-            return;
-        }
-        System.out.println("Tìm kiếm gần đây");
-        int n = Dictionary.SaveHistoryWord.size();
-        int no = 1;
+    public String HistoryCommandLine() {
+          if (Dictionary.SaveHistoryWord.isEmpty()) {
+//              System.out.println("Không có từ nào tìm kiếm gần đây");
+//              return;
+                return "Không có từ nào tìm kiếm gần đây";
+          }
+//          System.out.println("Tìm kiếm gần đây");
+          int n = Dictionary.SaveHistoryWord.size();
+          int no = 1;
+        StringBuilder content = new StringBuilder();
         for(int i = n-1 ; i >= 0 ; i--) {
-            System.out.println(Dictionary.SaveHistoryWord.get(i));
+//            System.out.println(Dictionary.SaveHistoryWord.get(i));
+            content.append(Dictionary.SaveHistoryWord.get(i));
+            content.append("\n");
             no++;
         }
-        System.out.println("Số kết quả đã tìm kiếm là:" + no);
+//        System.out.println("Số kết quả đã tìm kiếm là:" + no);
+        return content.toString();
+//        return "Số kết quả đã tìm kiếm là:" + no;
+    }
+
+
+    public static void ImportFromFileCommandLine() {
+        try {
+            File file = new File("Dictionary.txt");
+
+            if (!file.exists()) {
+                System.out.println("File không tồn tại!");
+                return;
+            }
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.trim().split("\\s+", 2);
+
+                if (parts.length == 2) {
+                    String wordTarget = parts[0];
+                    String wordExplain = parts[1];
+                    Dictionary.words.add(new Word(wordTarget, wordExplain));
+                } else {
+                    System.out.println("Lỗi ở từ: " + line);
+                }
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+
+            System.out.println("Đã đọc từ file thành công.");
+
+        } catch (IOException e) {
+            System.out.println("LỖI HÀM IMPORT FROM FILE");
+        }
+    }
+    public static void Translate() throws IOException {
+        System.out.println("[1] ENG --> VIE");
+        System.out.println("[2] VIE --> ENG");
+
+        Scanner scanner = new Scanner(System.in);
+        int choiceTranslate = scanner.nextInt();
+        scanner.nextLine();  // Đọc newline character sau khi đọc số
+
+        if (choiceTranslate == 1) {
+            System.out.println("ENG --> VIE");
+            System.out.print("Nhập văn bản tiếng Anh: ");
+            String text = scanner.nextLine();
+            String translatedText = GoogleTranslateAPI.googleTranslate("en", "vi", text);
+            System.out.println("Nghĩa: " + translatedText);
+        } else if (choiceTranslate == 2) {
+            System.out.println("VIE --> ENG");
+            System.out.print("Nhập văn bản tiếng Việt: ");
+            String text = scanner.nextLine();
+            String translatedText = GoogleTranslateAPI.googleTranslate("vi", "en", text);
+            System.out.println("Translation: " + translatedText);
+        } else {
+            System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn 1 hoặc 2.");
+        }
     }
     public static void main(String[] args) {
         DictionaryCommandLine dictionaryApp = new DictionaryCommandLine();
         dictionaryApp.dictionaryBasic();
-    }
-
-    public void ImportToFileCommandLine() {
-        for (Word word : Dictionary.words) {
-
-
-            //Đang build dở :))
-
-        }
-
-    }
-
-    public void GameCommandLine() {
-
-        //Đang build dở :))
-
     }
 }

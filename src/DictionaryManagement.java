@@ -1,3 +1,4 @@
+package com.example.demogaru;
 import java.util.Scanner;
 
 public class DictionaryManagement {
